@@ -1,20 +1,243 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8"/>
-  <title>减肥小队</title>
+  <meta charset="UTF-8" />
+  <title>我们的减肥小队</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#333;margin:0;padding:2rem}
-    h1{color:#ff6b6b}
-    section{margin-bottom:2rem}
+    :root{--bg:#fff;--text:#333;--primary:#ff6b6b}
+    @media (prefers-color-scheme:dark){:root{--bg:#1e1e1e;--text:#ddd}}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;background:var(--bg);color:var(--text)}
+    header{display:flex;align-items:center;justify-content:space-between;padding:0 1rem;background:var(--primary);color:#fff}
+    nav{display:flex;gap:1rem}
+    nav span{cursor:pointer;padding:.5rem 0;border-bottom:2px solid transparent}
+    nav span.active{border-color:#fff}
+    main{padding:1rem}
+    section{display:none}
+    section.active{display:block}
+    .card{background:#f5f5f7;border-radius:8px;padding:1rem;margin-bottom:1rem}
+    textarea{width:100%;resize:vertical}
+    button{background:var(--primary);color:#fff;border:0;padding:.5rem 1rem;border-radius:4px;cursor:pointer}
+    img{max-width:100%;border-radius:4px}
   </style>
 </head>
 <body>
-  <h1>🎯 欢迎来到我们的减肥基地！</h1>
-  <p>真实第一 · 鼓励为主 · 健康至上</p >
-  <section>
-    <h2>本周焦点目标</h2>
-    <p>每人完成 2 次运动</p >
-  </section>
+  <header>
+    <h1>🎯 我们的减肥基地</h1>
+    <nav>
+      <span class="tab active" data-page="home">首页</span>
+      <span class="tab" data-page="recipe">食谱</span>
+      <span class="tab" data-page="sport">打卡</span>
+      <span class="tab" data-page="progress">进度</span>
+      <span class="tab" data-page="chat">灌水</span>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 1. 首页 -->
+    <section id="home" class="active">
+      <div class="card">
+        <h2>基本原则</h2>
+        <ol>
+          <li>真实第一：拒绝攀比，只求真实。</li>
+          <li>鼓励为主：一个人的成功就是全队的成功！</li>
+          <li>健康至上：不搞极端节食。</li>
+        </ol>
+        <h3>本周焦点目标</h3>
+        <p id="weeklyGoal">每人完成 2 次运动</p>
+        <button onclick="editGoal()">修改目标</button>
+      </div>
+    </section>
+
+    <!-- 2. 食谱 -->
+    <section id="recipe">
+      <h2>🥗 共享食谱库</h2>
+      <div id="recipeList"></div>
+      <div class="card">
+        <h3>新增食谱</h3>
+        <input id="rName" placeholder="菜名">
+        <textarea id="rIngredient" placeholder="食材"></textarea>
+        <textarea id="rStep" placeholder="做法"></textarea>
+        <input id="rAuthor" placeholder="提供者">
+        <input type="file" id="rPic" accept="image/*">
+        <button onclick="addRecipe()">发布</button>
+      </div>
+    </section>
+
+    <!-- 3. 打卡 -->
+    <section id="sport">
+      <h2>💪 运动打卡区</h2>
+      <div id="sportList"></div>
+      <div class="card">
+        <textarea id="sContent" placeholder="今天做了什么运动？"></textarea>
+        <button onclick="addSport()">打卡</button>
+      </div>
+    </section>
+
+    <!-- 4. 进度 -->
+    <section id="progress">
+      <h2>📈 进度记录墙</h2>
+      <table id="progressTable" border="1" cellpadding="6">
+        <thead><tr><th>姓名</th><th>当前体重</th><th>较上周</th><th>本周心得</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="card">
+        <input id="pName" placeholder="姓名">
+        <input id="pWeight" placeholder="体重(kg)">
+        <textarea id="pNote" placeholder="心得"></textarea>
+        <button onclick="addProgress()">记录</button>
+      </div>
+    </section>
+
+    <!-- 5. 灌水 -->
+    <section id="chat">
+      <h2>💬 灌水鼓励区</h2>
+      <div id="chatList"></div>
+      <div class="card">
+        <textarea id="cContent" placeholder="说点什么鼓励大家吧~"></textarea>
+        <button onclick="addChat()">发送</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    /* ===== 路由 ===== */
+    document.querySelectorAll('.tab').forEach(el=>{
+      el.onclick=e=>{
+        document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+        document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById(el.dataset.page).classList.add('active');
+      }
+    });
+
+    /* ===== 本地存储 ===== */
+    const db=(key,def=[])=>JSON.parse(localStorage.getItem(key)||JSON.stringify(def));
+    const save=(key,val)=>localStorage.setItem(key,JSON.stringify(val));
+
+    /* ===== 首页 ===== */
+    function loadGoal(){
+      const g=db('weeklyGoal','每人完成 2 次运动');
+      document.getElementById('weeklyGoal').textContent=g;
+    }
+    function editGoal(){
+      const g=prompt('本周焦点目标：',db('weeklyGoal'));
+      if(g){save('weeklyGoal',g);loadGoal();}
+    }
+    loadGoal();
+
+    /* ===== 食谱 ===== */
+    function renderRecipe(){
+      const arr=db('recipe');
+      const box=document.getElementById('recipeList');
+      box.innerHTML=arr.map((r,i)=>`
+        <div class="card">
+          <h3>${r.name}</h3>
+          <p><strong>食材：</strong>${r.ingredient}</p>
+          <p><strong>做法：</strong>${r.step}</p>
+          <p><strong>提供者：</strong>${r.author}</p>
+          ${r.pic?`<img src="${r.pic}">`:''}
+          <button onclick="delRecipe(${i})">删除</button>
+        </div>`).join('');
+    }
+    function addRecipe(){
+      const r={
+        name:document.getElementById('rName').value,
+        ingredient:document.getElementById('rIngredient').value,
+        step:document.getElementById('rStep').value,
+        author:document.getElementById('rAuthor').value,
+        pic:''
+      };
+      const file=document.getElementById('rPic').files[0];
+      if(file){
+        const reader=new FileReader();
+        reader.onload=e=>{r.pic=e.target.result;saveList();};
+        reader.readAsDataURL(file);
+      }else{saveList();}
+      function saveList(){
+        const list=db('recipe');
+        list.unshift(r);
+        save('recipe',list);
+        renderRecipe();
+        ['rName','rIngredient','rStep','rAuthor','rPic'].forEach(id=>document.getElementById(id).value='');
+      }
+    }
+    function delRecipe(i){const l=db('recipe');l.splice(i,1);save('recipe',l);renderRecipe();}
+    renderRecipe();
+
+    /* ===== 打卡 ===== */
+    function renderSport(){
+      const arr=db('sport');
+      const box=document.getElementById('sportList');
+      box.innerHTML=arr.map((s,i)=>`
+        <div class="card">
+          <small>${s.date}</small>
+          <p>${s.content}</p>
+          <button onclick="delSport(${i})">删除</button>
+        </div>`).join('');
+    }
+    function addSport(){
+      const v=document.getElementById('sContent').value.trim();
+      if(!v)return;
+      const list=db('sport');
+      list.unshift({date:new Date().toLocaleString('zh-CN'),content:v});
+      save('sport',list);
+      document.getElementById('sContent').value='';
+      renderSport();
+    }
+    function delSport(i){const l=db('sport');l.splice(i,1);save('sport',l);renderSport();}
+    renderSport();
+
+    /* ===== 进度 ===== */
+    function renderProgress(){
+      const arr=db('progress');
+      const tb=document.querySelector('#progressTable tbody');
+      tb.innerHTML=arr.map((p,i)=>`
+        <tr>
+          <td>${p.name}</td>
+          <td>${p.weight} kg</td>
+          <td>${p.delta}</td>
+          <td>${p.note}</td>
+        </tr>`).join('');
+    }
+    function addProgress(){
+      const name=document.getElementById('pName').value.trim();
+      const weight=parseFloat(document.getElementById('pWeight').value);
+      const note=document.getElementById('pNote').value.trim();
+      if(!name||!weight)return;
+      const list=db('progress');
+      const last=list.find(x=>x.name===name);
+      const delta=last?(weight-last.weight).toFixed(1):'--';
+      list.unshift({name,weight,delta,note});
+      save('progress',list);
+      ['pName','pWeight','pNote'].forEach(id=>document.getElementById(id).value='');
+      renderProgress();
+    }
+    renderProgress();
+
+    /* ===== 灌水 ===== */
+    function renderChat(){
+      const arr=db('chat');
+      const box=document.getElementById('chatList');
+      box.innerHTML=arr.map((c,i)=>`
+        <div class="card">
+          <small>${c.date} ${c.name}：</small>
+          <p>${c.content}</p>
+          <button onclick="likeChat(${i})">👍 ${c.like||0}</button>
+        </div>`).join('');
+    }
+    function addChat(){
+      const v=document.getElementById('cContent').value.trim();
+      if(!v)return;
+      const name=prompt('昵称：')||'匿名';
+      const list=db('chat');
+      list.unshift({date:new Date().toLocaleString('zh-CN'),name,content:v,like:0});
+      save('chat',list);
+      document.getElementById('cContent').value='';
+      renderChat();
+    }
+    function likeChat(i){const l=db('chat');l[i].like=(l[i].like||0)+1;save('chat',l);renderChat();}
+    renderChat();
+  </script>
 </body>
 </html>
