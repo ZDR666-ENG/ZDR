@@ -241,18 +241,5 @@
   </script>
 </body>
 </html>
-<script>
-// 1. 跳到 GitHub 授权
-if(!location.search.includes('code=')){
-  const cid='你的GitHub OAuth App Client ID';
-  location=`https://github.com/login/oauth/authorize?client_id=${cid}&scope=read:user`
-}
-// 2. 用 code 换 token（仅演示，生产用云函数）
-fetch('https://api.github.com/repos/你的用户名/ZDR/collaborators',{
-  headers:{Authorization:'token '+localToken}
-}).then(r=>r.json()).then(list=>{
-  const me=list.find(u=>u.login===当前登录用户);
-  if(!me)document.body.innerHTML='无权限';
-});
-</script>
+
 
