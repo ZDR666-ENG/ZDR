@@ -1,245 +1,874 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <title>我们的减肥小队</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <style>
-    :root{--bg:#fff;--text:#333;--primary:#ff6b6b}
-    @media (prefers-color-scheme:dark){:root{--bg:#1e1e1e;--text:#ddd}}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;background:var(--bg);color:var(--text)}
-    header{display:flex;align-items:center;justify-content:space-between;padding:0 1rem;background:var(--primary);color:#fff}
-    nav{display:flex;gap:1rem}
-    nav span{cursor:pointer;padding:.5rem 0;border-bottom:2px solid transparent}
-    nav span.active{border-color:#fff}
-    main{padding:1rem}
-    section{display:none}
-    section.active{display:block}
-    .card{background:#f5f5f7;border-radius:8px;padding:1rem;margin-bottom:1rem}
-    textarea{width:100%;resize:vertical}
-    button{background:var(--primary);color:#fff;border:0;padding:.5rem 1rem;border-radius:4px;cursor:pointer}
-    img{max-width:100%;border-radius:4px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>瘦身小伙伴 - 一起减肥更有趣</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 登录页面样式 */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-box h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #667eea;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* 主页面样式 */
+        .main-container {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 打卡卡片样式 */
+        .checkin-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .checkin-card h3 {
+            margin-bottom: 15px;
+        }
+
+        .checkin-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .checkin-btn {
+            padding: 10px 20px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checkin-btn:hover {
+            background: white;
+            color: #f5576c;
+        }
+
+        .checkin-btn.completed {
+            background: white;
+            color: #f5576c;
+        }
+
+        /* 食谱卡片样式 */
+        .recipe-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .recipe-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .recipe-card .author {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .add-recipe-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .add-recipe-form input, .add-recipe-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+        }
+
+        /* 进度条样式 */
+        .progress-bar {
+            background: #e0e0e0;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s;
+        }
+
+        /* 社区互动样式 */
+        .post-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+
+        .post-card .author {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .post-card .content {
+            margin-bottom: 10px;
+        }
+
+        .post-card .actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .post-card .actions button {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .post-card .actions button:hover {
+            color: #667eea;
+        }
+
+        /* 排行榜样式 */
+        .leaderboard {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .rank-1 { border-left: 5px solid #ffd700; }
+        .rank-2 { border-left: 5px solid #c0c0c0; }
+        .rank-3 { border-left: 5px solid #cd7f32; }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .main-container {
+                padding: 20px;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .checkin-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>🎯 我们的减肥基地</h1>
-    <nav>
-      <span class="tab active" data-page="home">首页</span>
-      <span class="tab" data-page="recipe">食谱</span>
-      <span class="tab" data-page="sport">打卡</span>
-      <span class="tab" data-page="progress">进度</span>
-      <span class="tab" data-page="chat">灌水</span>
-    </nav>
-  </header>
+    <!-- 登录页面 -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <h2>🎯 瘦身小伙伴</h2>
+            <div class="input-group">
+                <input type="text" id="username" placeholder="输入你的昵称">
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="设置密码">
+            </div>
+            <button class="btn" onclick="login()">开始瘦身之旅</button>
+        </div>
+    </div>
 
-  <main>
-    <!-- 1. 首页 -->
-    <section id="home" class="active">
-      <div class="card">
-        <h2>基本原则</h2>
-        <ol>
-          <li>真实第一：拒绝攀比，只求真实。</li>
-          <li>鼓励为主：一个人的成功就是全队的成功！</li>
-          <li>健康至上：不搞极端节食。</li>
-        </ol>
-        <h3>本周焦点目标</h3>
-        <p id="weeklyGoal">每人完成 2 次运动</p>
-        <button onclick="editGoal()">修改目标</button>
-      </div>
-    </section>
+    <!-- 主页面 -->
+    <div id="mainPage" class="container">
+        <div class="main-container">
+            <div class="header">
+                <h1>🌟 瘦身小伙伴</h1>
+                <p>欢迎 <span id="currentUser"></span>！让我们一起健康瘦身！</p>
+                <button onclick="logout()" style="position: absolute; right: 30px; top: 30px; background: #ff6b6b; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer;">退出</button>
+            </div>
 
-    <!-- 2. 食谱 -->
-    <section id="recipe">
-      <h2>🥗 共享食谱库</h2>
-      <div id="recipeList"></div>
-      <div class="card">
-        <h3>新增食谱</h3>
-        <input id="rName" placeholder="菜名">
-        <textarea id="rIngredient" placeholder="食材"></textarea>
-        <textarea id="rStep" placeholder="做法"></textarea>
-        <input id="rAuthor" placeholder="提供者">
-        <input type="file" id="rPic" accept="image/*">
-        <button onclick="addRecipe()">发布</button>
-      </div>
-    </section>
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showSection('dashboard')">📊 今日打卡</button>
+                <button class="nav-tab" onclick="showSection('recipes')">🥗 共享食谱</button>
+                <button class="nav-tab" onclick="showSection('community')">💬 瘦身社区</button>
+                <button class="nav-tab" onclick="showSection('progress')">📈 我的进度</button>
+                <button class="nav-tab" onclick="showSection('leaderboard')">🏆 瘦身排行榜</button>
+            </div>
 
-    <!-- 3. 打卡 -->
-    <section id="sport">
-      <h2>💪 运动打卡区</h2>
-      <div id="sportList"></div>
-      <div class="card">
-        <textarea id="sContent" placeholder="今天做了什么运动？"></textarea>
-        <button onclick="addSport()">打卡</button>
-      </div>
-    </section>
+            <!-- 今日打卡 -->
+            <div id="dashboard" class="content-section active">
+                <div class="checkin-card">
+                    <h3>💪 今日打卡</h3>
+                    <div class="checkin-buttons">
+                        <button class="checkin-btn" id="dietBtn" onclick="checkin('diet')">饮食打卡</button>
+                        <button class="checkin-btn" id="waterBtn" onclick="checkin('water')">喝水打卡</button>
+                        <button class="checkin-btn" id="exerciseBtn" onclick="checkin('exercise')">运动打卡</button>
+                        <button class="checkin-btn" id="weightBtn" onclick="checkin('weight')">记录体重</button>
+                    </div>
+                </div>
 
-    <!-- 4. 进度 -->
-    <section id="progress">
-      <h2>📈 进度记录墙</h2>
-      <table id="progressTable" border="1" cellpadding="6">
-        <thead><tr><th>姓名</th><th>当前体重</th><th>较上周</th><th>本周心得</th></tr></thead>
-        <tbody></tbody>
-      </table>
-      <div class="card">
-        <input id="pName" placeholder="姓名">
-        <input id="pWeight" placeholder="体重(kg)">
-        <textarea id="pNote" placeholder="心得"></textarea>
-        <button onclick="addProgress()">记录</button>
-      </div>
-    </section>
+                <div id="checkinStatus">
+                    <h3>今日完成情况</h3>
+                    <div id="todayProgress"></div>
+                </div>
 
-    <!-- 5. 灌水 -->
-    <section id="chat">
-      <h2>💬 灌水鼓励区</h2>
-      <div id="chatList"></div>
-      <div class="card">
-        <textarea id="cContent" placeholder="说点什么鼓励大家吧~"></textarea>
-        <button onclick="addChat()">发送</button>
-      </div>
-    </section>
-  </main>
+                <div id="friendUpdates" style="margin-top: 30px;">
+                    <h3>好友动态</h3>
+                    <div id="updatesList"></div>
+                </div>
+            </div>
 
-  <script>
-    /* ===== 路由 ===== */
-    document.querySelectorAll('.tab').forEach(el=>{
-      el.onclick=e=>{
-        document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-        document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
-        el.classList.add('active');
-        document.getElementById(el.dataset.page).classList.add('active');
-      }
-    });
+            <!-- 共享食谱 -->
+            <div id="recipes" class="content-section">
+                <div class="add-recipe-form">
+                    <h3>分享新食谱</h3>
+                    <input type="text" id="recipeName" placeholder="食谱名称">
+                    <textarea id="recipeContent" placeholder="食谱详情（食材、做法、热量等）" rows="4"></textarea>
+                    <button class="btn" onclick="addRecipe()">分享食谱</button>
+                </div>
+                <div id="recipesList"></div>
+            </div>
 
-    /* ===== 本地存储 ===== */
-    const db=(key,def=[])=>JSON.parse(localStorage.getItem(key)||JSON.stringify(def));
-    const save=(key,val)=>localStorage.setItem(key,JSON.stringify(val));
+            <!-- 瘦身社区 -->
+            <div id="community" class="content-section">
+                <div class="add-recipe-form">
+                    <h3>发布动态</h3>
+                    <textarea id="postContent" placeholder="分享你的瘦身心得、困难或成就..." rows="3"></textarea>
+                    <button class="btn" onclick="addPost()">发布</button>
+                </div>
+                <div id="postsList"></div>
+            </div>
 
-    /* ===== 首页 ===== */
-    function loadGoal(){
-      const g=db('weeklyGoal','每人完成 2 次运动');
-      document.getElementById('weeklyGoal').textContent=g;
-    }
-    function editGoal(){
-      const g=prompt('本周焦点目标：',db('weeklyGoal'));
-      if(g){save('weeklyGoal',g);loadGoal();}
-    }
-    loadGoal();
+            <!-- 我的进度 -->
+            <div id="progress" class="content-section">
+                <h3>我的瘦身进度</h3>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+                    <h4>目标体重: <span id="goalWeight">60</span>kg</h4>
+                    <h4>当前体重: <span id="currentWeightDisplay">65</span>kg</h4>
+                    <h4>还需努力: <span id="remaining">5</span>kg</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 50%"></div>
+                    </div>
+                </div>
+                <div id="weightChart" style="background: #f8f9fa; padding: 20px; border-radius: 15px;">
+                    <h4>体重变化趋势</h4>
+                    <canvas id="weightCanvas" width="400" height="200"></canvas>
+                </div>
+            </div>
 
-    /* ===== 食谱 ===== */
-    function renderRecipe(){
-      const arr=db('recipe');
-      const box=document.getElementById('recipeList');
-      box.innerHTML=arr.map((r,i)=>`
-        <div class="card">
-          <h3>${r.name}</h3>
-          <p><strong>食材：</strong>${r.ingredient}</p>
-          <p><strong>做法：</strong>${r.step}</p>
-          <p><strong>提供者：</strong>${r.author}</p>
-          ${r.pic?`<img src="${r.pic}">`:''}
-          <button onclick="delRecipe(${i})">删除</button>
-        </div>`).join('');
-    }
-    function addRecipe(){
-      const r={
-        name:document.getElementById('rName').value,
-        ingredient:document.getElementById('rIngredient').value,
-        step:document.getElementById('rStep').value,
-        author:document.getElementById('rAuthor').value,
-        pic:''
-      };
-      const file=document.getElementById('rPic').files[0];
-      if(file){
-        const reader=new FileReader();
-        reader.onload=e=>{r.pic=e.target.result;saveList();};
-        reader.readAsDataURL(file);
-      }else{saveList();}
-      function saveList(){
-        const list=db('recipe');
-        list.unshift(r);
-        save('recipe',list);
-        renderRecipe();
-        ['rName','rIngredient','rStep','rAuthor','rPic'].forEach(id=>document.getElementById(id).value='');
-      }
-    }
-    function delRecipe(i){const l=db('recipe');l.splice(i,1);save('recipe',l);renderRecipe();}
-    renderRecipe();
+            <!-- 瘦身排行榜 -->
+            <div id="leaderboard" class="content-section">
+                <h3>🏆 瘦身排行榜</h3>
+                <div class="leaderboard">
+                    <div id="leaderboardList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    /* ===== 打卡 ===== */
-    function renderSport(){
-      const arr=db('sport');
-      const box=document.getElementById('sportList');
-      box.innerHTML=arr.map((s,i)=>`
-        <div class="card">
-          <small>${s.date}</small>
-          <p>${s.content}</p>
-          <button onclick="delSport(${i})">删除</button>
-        </div>`).join('');
-    }
-    function addSport(){
-      const v=document.getElementById('sContent').value.trim();
-      if(!v)return;
-      const list=db('sport');
-      list.unshift({date:new Date().toLocaleString('zh-CN'),content:v});
-      save('sport',list);
-      document.getElementById('sContent').value='';
-      renderSport();
-    }
-    function delSport(i){const l=db('sport');l.splice(i,1);save('sport',l);renderSport();}
-    renderSport();
+    <script>
+        // 数据存储
+        let currentUser = null;
+        let users = JSON.parse(localStorage.getItem('weightLossUsers')) || {};
+        let recipes = JSON.parse(localStorage.getItem('weightLossRecipes')) || [];
+        let posts = JSON.parse(localStorage.getItem('weightLossPosts')) || [];
+        let leaderboard = JSON.parse(localStorage.getItem('weightLossLeaderboard')) || [];
 
-    /* ===== 进度 ===== */
-    function renderProgress(){
-      const arr=db('progress');
-      const tb=document.querySelector('#progressTable tbody');
-      tb.innerHTML=arr.map((p,i)=>`
-        <tr>
-          <td>${p.name}</td>
-          <td>${p.weight} kg</td>
-          <td>${p.delta}</td>
-          <td>${p.note}</td>
-        </tr>`).join('');
-    }
-    function addProgress(){
-      const name=document.getElementById('pName').value.trim();
-      const weight=parseFloat(document.getElementById('pWeight').value);
-      const note=document.getElementById('pNote').value.trim();
-      if(!name||!weight)return;
-      const list=db('progress');
-      const last=list.find(x=>x.name===name);
-      const delta=last?(weight-last.weight).toFixed(1):'--';
-      list.unshift({name,weight,delta,note});
-      save('progress',list);
-      ['pName','pWeight','pNote'].forEach(id=>document.getElementById(id).value='');
-      renderProgress();
-    }
-    renderProgress();
+        // 登录功能
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            if (!username || !password) {
+                alert('请输入昵称和密码！');
+                return;
+            }
 
-    /* ===== 灌水 ===== */
-    function renderChat(){
-      const arr=db('chat');
-      const box=document.getElementById('chatList');
-      box.innerHTML=arr.map((c,i)=>`
-        <div class="card">
-          <small>${c.date} ${c.name}：</small>
-          <p>${c.content}</p>
-          <button onclick="likeChat(${i})">👍 ${c.like||0}</button>
-        </div>`).join('');
-    }
-    function addChat(){
-      const v=document.getElementById('cContent').value.trim();
-      if(!v)return;
-      const name=prompt('昵称：')||'匿名';
-      const list=db('chat');
-      list.unshift({date:new Date().toLocaleString('zh-CN'),name,content:v,like:0});
-      save('chat',list);
-      document.getElementById('cContent').value='';
-      renderChat();
-    }
-    function likeChat(i){const l=db('chat');l[i].like=(l[i].like||0)+1;save('chat',l);renderChat();}
-    renderChat();
-  </script>
+            currentUser = username;
+            
+            if (!users[username]) {
+                users[username] = {
+                    password: password,
+                    weight: 65,
+                    goalWeight: 60,
+                    checkins: {},
+                    recipes: [],
+                    posts: [],
+                    weightHistory: [{date: new Date().toISOString().split('T')[0], weight: 65}]
+                };
+            } else if (users[username].password !== password) {
+                alert('密码错误！');
+                return;
+            }
+
+            localStorage.setItem('weightLossUsers', JSON.stringify(users));
+            
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainPage').style.display = 'block';
+            document.getElementById('currentUser').textContent = username;
+            
+            loadDashboard();
+            loadRecipes();
+            loadCommunity();
+            loadProgress();
+            loadLeaderboard();
+        }
+
+        // 退出登录
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('mainPage').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // 显示不同板块
+        function showSection(section) {
+            const sections = document.querySelectorAll('.content-section');
+            const tabs = document.querySelectorAll('.nav-tab');
+            
+            sections.forEach(s => s.classList.remove('active'));
+            tabs.forEach(t => t.classList.remove('active'));
+            
+            document.getElementById(section).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // 打卡功能
+        function checkin(type) {
+            const today = new Date().toISOString().split('T')[0];
+            if (!users[currentUser].checkins[today]) {
+                users[currentUser].checkins[today] = {};
+            }
+            
+            users[currentUser].checkins[today][type] = true;
+            localStorage.setItem('weightLossUsers', JSON.stringify(users));
+            
+            const btn = document.getElementById(type + 'Btn');
+            btn.classList.add('completed');
+            btn.textContent = '✓ ' + btn.textContent;
+            
+            updateTodayProgress();
+            addFriendUpdate(`${currentUser} 完成了${getCheckinName(type)}打卡！`);
+            
+            // 更新排行榜
+            updateLeaderboard();
+        }
+
+        function getCheckinName(type) {
+            const names = {
+                'diet': '饮食',
+                'water': '喝水',
+                'exercise': '运动',
+                'weight': '体重'
+            };
+            return names[type];
+        }
+
+        // 更新今日进度
+        function updateTodayProgress() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayCheckins = users[currentUser].checkins[today] || {};
+            const completed = Object.keys(todayCheckins).length;
+            const total = 4;
+            const percentage = (completed / total * 100).toFixed(0);
+            
+            document.getElementById('todayProgress').innerHTML = `
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${percentage}%"></div>
+                </div>
+                <p style="text-align: center; margin-top: 10px;">今日完成度: ${percentage}% (${completed}/${total})</p>
+            `;
+        }
+
+        // 添加好友动态
+        function addFriendUpdate(update) {
+            const updates = JSON.parse(localStorage.getItem('weightLossUpdates')) || [];
+            updates.unshift({
+                user: currentUser,
+                content: update,
+                time: new Date().toLocaleString()
+            });
+            localStorage.setItem('weightLossUpdates', JSON.stringify(updates));
+            loadFriendUpdates();
+        }
+
+        // 加载好友动态
+        function loadFriendUpdates() {
+            const updates = JSON.parse(localStorage.getItem('weightLossUpdates')) || [];
+            const updatesList = document.getElementById('updatesList');
+            
+            if (updates.length === 0) {
+                updatesList.innerHTML = '<p style="text-align: center; color: #666;">暂无好友动态</p>';
+                return;
+            }
+            
+            updatesList.innerHTML = updates.slice(0, 10).map(update => `
+                <div class="post-card">
+                    <div class="author">${update.user}</div>
+                    <div class="content">${update.content}</div>
+                    <div style="color: #999; font-size: 12px;">${update.time}</div>
+                </div>
+            `).join('');
+        }
+
+        // 添加食谱
+        function addRecipe() {
+            const name = document.getElementById('recipeName').value.trim();
+            const content = document.getElementById('recipeContent').value.trim();
+            
+            if (!name || !content) {
+                alert('请填写完整的食谱信息！');
+                return;
+            }
+            
+            const recipe = {
+                id: Date.now(),
+                name: name,
+                content: content,
+                author: currentUser,
+                time: new Date().toLocaleString(),
+                likes: 0
+            };
+            
+            recipes.unshift(recipe);
+            users[currentUser].recipes.push(recipe.id);
+            localStorage.setItem('weightLossRecipes', JSON.stringify(recipes));
+            localStorage.setItem('weightLossUsers', JSON.stringify(users));
+            
+            document.getElementById('recipeName').value = '';
+            document.getElementById('recipeContent').value = '';
+            
+            loadRecipes();
+            addFriendUpdate(`${currentUser} 分享了一个新食谱：${name}`);
+        }
+
+        // 加载食谱
+        function loadRecipes() {
+            const recipesList = document.getElementById('recipesList');
+            
+            if (recipes.length === 0) {
+                recipesList.innerHTML = '<p style="text-align: center; color: #666;">暂无食谱，快来分享第一个吧！</p>';
+                return;
+            }
+            
+            recipesList.innerHTML = recipes.map(recipe => `
+                <div class="recipe-card">
+                    <h4>${recipe.name}</h4>
+                    <div class="author">by ${recipe.author} · ${recipe.time}</div>
+                    <div>${recipe.content}</div>
+                    <div style="margin-top: 10px;">
+                        <button onclick="likeRecipe(${recipe.id})" style="background: none; border: none; color: #667eea; cursor: pointer;">
+                            👍 ${recipe.likes}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 点赞食谱
+        function likeRecipe(id) {
+            const recipe = recipes.find(r => r.id === id);
+            if (recipe) {
+                recipe.likes++;
+                localStorage.setItem('weightLossRecipes', JSON.stringify(recipes));
+                loadRecipes();
+            }
+        }
+
+        // 发布动态
+        function addPost() {
+            const content = document.getElementById('postContent').value.trim();
+            
+            if (!content) {
+                alert('请输入动态内容！');
+                return;
+            }
+            
+            const post = {
+                id: Date.now(),
+                content: content,
+                author: currentUser,
+                time: new Date().toLocaleString(),
+                likes: 0,
+                comments: []
+            };
+            
+            posts.unshift(post);
+            users[currentUser].posts.push(post.id);
+            localStorage.setItem('weightLossPosts', JSON.stringify(posts));
+            localStorage.setItem('weightLossUsers', JSON.stringify(users));
+            
+            document.getElementById('postContent').value = '';
+            
+            loadCommunity();
+        }
+
+        // 加载社区
+        function loadCommunity() {
+            const postsList = document.getElementById('postsList');
+            
+            if (posts.length === 0) {
+                postsList.innerHTML = '<p style="text-align: center; color: #666;">暂无动态，快来发布第一条吧！</p>';
+                return;
+            }
+            
+            postsList.innerHTML = posts.map(post => `
+                <div class="post-card">
+                    <div class="author">${post.author}</div>
+                    <div class="content">${post.content}</div>
+                    <div class="actions">
+                        <button onclick="likePost(${post.id})">👍 ${post.likes}</button>
+                        <button onclick="commentPost(${post.id})">💬 ${post.comments.length}</button>
+                        <span style="color: #999; font-size: 12px;">${post.time}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 点赞动态
+        function likePost(id) {
+            const post = posts.find(p => p.id === id);
+            if (post) {
+                post.likes++;
+                localStorage.setItem('weightLossPosts', JSON.stringify(posts));
+                loadCommunity();
+            }
+        }
+
+        // 评论动态
+        function commentPost(id) {
+            const comment = prompt('请输入你的评论：');
+            if (comment) {
+                const post = posts.find(p => p.id === id);
+                if (post) {
+                    post.comments.push({
+                        user: currentUser,
+                        content: comment,
+                        time: new Date().toLocaleString()
+                    });
+                    localStorage.setItem('weightLossPosts', JSON.stringify(posts));
+                    loadCommunity();
+                }
+            }
+        }
+
+        // 加载进度
+        function loadProgress() {
+            const user = users[currentUser];
+            const currentWeight = user.weight;
+            const goalWeight = user.goalWeight;
+            const remaining = (currentWeight - goalWeight).toFixed(1);
+            const progress = ((65 - currentWeight) / (65 - goalWeight) * 100).toFixed(0);
+            
+            document.getElementById('currentWeightDisplay').textContent = currentWeight;
+            document.getElementById('remaining').textContent = remaining;
+            document.getElementById('progressFill').style.width = Math.max(0, Math.min(100, progress)) + '%';
+            
+            // 绘制体重变化图
+            drawWeightChart();
+        }
+
+        // 绘制体重变化图
+        function drawWeightChart() {
+            const canvas = document.getElementById('weightCanvas');
+            const ctx = canvas.getContext('2d');
+            const history = users[currentUser].weightHistory;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (history.length < 2) {
+                ctx.fillStyle = '#999';
+                ctx.font = '14px Arial';
+                ctx.fillText('数据不足，请先记录体重', 10, 50);
+                return;
+            }
+            
+            // 简单的折线图
+            const maxWeight = Math.max(...history.map(h => h.weight));
+            const minWeight = Math.min(...history.map(h => h.weight));
+            const range = maxWeight - minWeight || 1;
+            
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            history.forEach((point, index) => {
+                const x = (index / (history.length - 1)) * (canvas.width - 40) + 20;
+                const y = canvas.height - 20 - ((point.weight - minWeight) / range) * (canvas.height - 40);
+                
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+                
+                // 绘制数据点
+                ctx.fillStyle = '#667eea';
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+            
+            ctx.stroke();
+            
+            // 绘制标签
+            ctx.fillStyle = '#999';
+            ctx.font = '12px Arial';
+            ctx.fillText(minWeight + 'kg', 5, 20);
+            ctx.fillText(maxWeight + 'kg', 5, canvas.height - 10);
+        }
+
+        // 更新排行榜
+        function updateLeaderboard() {
+            const userStats = [];
+            
+            Object.keys(users).forEach(username => {
+                const user = users[username];
+                const today = new Date().toISOString().split('T')[0];
+                const todayCheckins = user.checkins[today] || {};
+                const checkinCount = Object.keys(user.checkins).length;
+                const totalCheckins = Object.values(user.checkins).reduce((sum, day) => sum + Object.keys(day).length, 0);
+                
+                userStats.push({
+                    username: username,
+                    checkinCount: checkinCount,
+                    totalCheckins: totalCheckins,
+                    weightLoss: 65 - user.weight,
+                    todayCheckins: Object.keys(todayCheckins).length
+                });
+            });
+            
+            // 按总打卡次数和减重排序
+            userStats.sort((a, b) => {
+                const scoreA = a.totalCheckins * 10 + a.weightLoss * 5;
+                const scoreB = b.totalCheckins * 10 + b.weightLoss * 5;
+                return scoreB - scoreA;
+            });
+            
+            localStorage.setItem('weightLossLeaderboard', JSON.stringify(userStats));
+            loadLeaderboard();
+        }
+
+        // 加载排行榜
+        function loadLeaderboard() {
+            const leaderboardList = document.getElementById('leaderboardList');
+            const leaderboard = JSON.parse(localStorage.getItem('weightLossLeaderboard')) || [];
+            
+            if (leaderboard.length === 0) {
+                leaderboardList.innerHTML = '<p style="text-align: center; color: #666;">暂无数据</p>';
+                return;
+            }
+            
+            leaderboardList.innerHTML = leaderboard.map((user, index) => {
+                const rankClass = index < 3 ? `rank-${index + 1}` : '';
+                const medal = index < 3 ? ['🥇', '🥈', '🥉'][index] : `${index + 1}.`;
+                
+                return `
+                    <div class="leaderboard-item ${rankClass}">
+                        <div>
+                            <span>${medal} ${user.username}</span>
+                            <div style="font-size: 12px; color: #666;">
+                                打卡${user.checkinCount}天 · 总打卡${user.totalCheckins}次 · 减重${user.weightLoss.toFixed(1)}kg
+                            </div>
+                        </div>
+                        <div style="font-weight: bold; color: #667eea;">
+                            ${(user.totalCheckins * 10 + user.weightLoss * 5).toFixed(0)}分
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 加载仪表盘
+        function loadDashboard() {
+            updateTodayProgress();
+            loadFriendUpdates();
+            
+            // 重置打卡按钮状态
+            const today = new Date().toISOString().split('T')[0];
+            const todayCheckins = users[currentUser].checkins[today] || {};
+            
+            ['diet', 'water', 'exercise', 'weight'].forEach(type => {
+                const btn = document.getElementById(type + 'Btn');
+                if (todayCheckins[type]) {
+                    btn.classList.add('completed');
+                    btn.textContent = '✓ ' + btn.textContent.replace('✓ ', '');
+                } else {
+                    btn.classList.remove('completed');
+                    btn.textContent = btn.textContent.replace('✓ ', '');
+                }
+            });
+        }
+
+        // 页面加载时的初始化
+        window.onload = function() {
+            // 检查是否有用户登录
+            const savedUser = localStorage.getItem('weightLossCurrentUser');
+            if (savedUser && users[savedUser]) {
+                currentUser = savedUser;
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('mainPage').style.display = 'block';
+                document.getElementById('currentUser').textContent = currentUser;
+                
+                loadDashboard();
+                loadRecipes();
+                loadCommunity();
+                loadProgress();
+                loadLeaderboard();
+            }
+        };
+
+        // 保存当前用户
+        window.onbeforeunload = function() {
+            if (currentUser) {
+                localStorage.setItem('weightLossCurrentUser', currentUser);
+            }
+        };
+    </script>
 </body>
 </html>
+
 
 
